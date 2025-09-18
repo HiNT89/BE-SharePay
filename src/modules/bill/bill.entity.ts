@@ -1,4 +1,4 @@
-// Import các decorator từ TypeORM để định nghĩa entity
+// Import các decorator từ TypeORM để định nghĩa entity và quan hệ
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -11,100 +11,106 @@ import {
 import { User } from '@/modules/user/user.entity';
 
 /**
- * Entity User - Đại diện cho bảng users trong database
+ * Entity Bill - Đại diện cho bảng bills (hóa đơn) trong database
  *
  * Chức năng:
- * - Lưu trữ thông tin người dùng
- * - Tự động hash password trước khi lưu
- * - Validate password khi đăng nhập
- * - Quản lý vai trò và trạng thái người dùng
+ * - Lưu trữ thông tin hóa đơn chi tiêu
+ * - Quản lý thông tin thanh toán và chia sẻ chi phí
+ * - Liên kết với nhiều người dùng thông qua quan hệ Many-to-Many
+ * - Hỗ trợ soft delete và tracking thời gian
  */
 @Entity('bills') // Tên bảng trong database
 export class Bill {
   /**
-   * Primary key - ID tự tăng
+   * ID duy nhất của hóa đơn - Primary key tự động tăng
    */
   @PrimaryGeneratedColumn()
   id: number;
 
   /**
-   * Email của người dùng - phải duy nhất trong hệ thống
-   */
-  @Column({ unique: true })
-  email: string;
-
-  /**
-   * Tiêu đề hóa đơn
+   * Tiêu đề/tên của hóa đơn
+   * Ví dụ: "Ăn trưa nhà hàng ABC", "Mua sắm siêu thị"
    */
   @Column()
   title: string;
 
   /**
-   * Họ của người dùng
+   * Tổng số tiền của hóa đơn
+   * Lưu trữ dưới dạng số (có thể là decimal/float)
    */
   @Column()
-  totalAmount: number;
+  total_amount: number;
 
   /**
-   * Ảnh đại diện của người dùng
+   * Mã đơn vị tiền tệ
+   * Mặc định là 'VND' (Việt Nam Đồng)
+   * Có thể là USD, EUR, JPY, etc.
    */
   @Column({ nullable: true, default: 'VND' })
-  currencyCode: string;
+  currency_code: string;
 
   /**
-   * Trạng thái hoạt động của tài khoản
-   * Mặc định là true (đang hoạt động)
+   * Trạng thái hoạt động của hóa đơn
+   * true: đang hoạt động, false: bị vô hiệu hóa
+   * Mặc định là true
    */
   @Column({ default: true })
   isActive: boolean;
 
   /**
-   * Thời gian tạo tài khoản - tự động sinh
+   * Thời gian tạo hóa đơn - tự động sinh khi tạo record
    */
   @CreateDateColumn()
   createdAt: Date;
 
   /**
-   * Thời gian cập nhật cuối cùng - tự động cập nhật
+   * Thời gian cập nhật cuối cùng - tự động cập nhật khi modify
    */
   @UpdateDateColumn()
   updatedAt: Date;
 
   /**
-   * Thời gian xóa mềm - null nếu chưa bị xóa
+   * Thời gian xóa mềm (soft delete)
+   * null: chưa bị xóa, có giá trị: đã bị xóa vào thời điểm này
    */
   @DeleteDateColumn()
   deletedAt?: Date;
 
   /**
-   * Ngày tạo hóa đơn thanh toán
+   * Ngày phát sinh hóa đơn (ngày thực tế chi tiêu)
    * Định dạng: YYYY-MM-DD
+   * Khác với createdAt (thời gian tạo record trong hệ thống)
    */
   @Column({ type: 'date', nullable: true })
   bill_date?: Date;
 
   /**
-   * Ghi chú thêm về hóa đơn
+   * Ghi chú bổ sung về hóa đơn
+   * Có thể chứa thông tin chi tiết về mục đích chi tiêu,
+   * cách thức chia sẻ, hoặc bất kỳ lưu ý nào khác
    */
   @Column({ type: 'text', nullable: true })
   note?: string;
 
   /**
-   * Hình ảnh hóa đơn dưới dạng URL
+   * URL hình ảnh hóa đơn gốc
+   * Dùng để lưu trữ ảnh chụp hóa đơn thực tế làm bằng chứng
    */
   @Column({ type: 'text', nullable: true })
-  imageUrl?: string;
+  image_url?: string;
 
   /**
-   * ID người dùng tạo hóa đơn
-   * Liên kết với bảng users
+   * ID của người dùng tạo hóa đơn
+   * Foreign key liên kết với bảng users
+   * Xác định người chịu trách nhiệm chính về hóa đơn này
    */
   @Column()
-  userId: number;
+  user_id: number;
 
   /**
-   * Danh sách người dùng liên quan đến hóa đơn
-   * Quan hệ Many-to-Many với User entity
+   * Danh sách người dùng tham gia chia sẻ hóa đơn
+   * Quan hệ Many-to-Many: một hóa đơn có thể có nhiều người tham gia,
+   * một người có thể tham gia nhiều hóa đơn khác nhau
    */
   @ManyToMany(() => User, (u) => u.bills)
   users: User[];

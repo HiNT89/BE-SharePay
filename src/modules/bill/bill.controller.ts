@@ -60,27 +60,27 @@ export class BillController {
   constructor(private readonly BillService: BillService) {}
 
   /**
-   * API tạo người dùng mới
+   * API tạo hóa đơn mới
    *
-   * @param createBillDto - Dữ liệu tạo người dùng (email, password, name)
+   * @param createBillDto - Dữ liệu tạo hóa đơn (amount, description, userId)
    * @returns BaseResponseDto<BillResponseDto> - Response có metadata
    *
    * HTTP Method: POST /Bills
    * Body: CreateBillDto
-   * Response: 201 - BaseResponseDto<BillResponseDto> | 409 - Email đã tồn tại
+   * Response: 201 - BaseResponseDto<BillResponseDto> | 409 - Hóa đơn đã tồn tại
    */
   @ApiOperation({
-    summary: 'Tạo người dùng mới',
-    description: 'Tạo một tài khoản người dùng mới (chỉ admin)',
+    summary: 'Tạo hóa đơn mới',
+    description: 'Tạo một hóa đơn mới (chỉ admin)',
   })
   @ApiResponse({
     status: 201,
-    description: 'Tạo người dùng thành công',
+    description: 'Tạo hóa đơn thành công',
     type: ResponseExampleDto,
   })
   @ApiResponse({
     status: 409,
-    description: 'Email đã được sử dụng',
+    description: 'Hóa đơn đã tồn tại',
   })
   @Post()
   async create(
@@ -100,9 +100,8 @@ export class BillController {
    * Response: 200 - PaginatedResponseDto<BillResponseDto>
    */
   @ApiOperation({
-    summary: 'Lấy danh sách tất cả người dùng',
-    description:
-      'Lấy danh sách tất cả người dùng trong hệ thống với pagination',
+    summary: 'Lấy danh sách tất cả hóa đơn',
+    description: 'Lấy danh sách tất cả hóa đơn trong hệ thống với pagination',
   })
   @ApiQuery({
     name: 'page',
@@ -152,12 +151,12 @@ export class BillController {
    * Response: 200 - BaseResponseDto<BillResponseDto> | 404 - Không tìm thấy người dùng
    */
   @ApiOperation({
-    summary: 'Lấy thông tin người dùng theo ID',
-    description: 'Lấy thông tin chi tiết của một người dùng',
+    summary: 'Lấy thông tin hóa đơn theo ID',
+    description: 'Lấy thông tin chi tiết của một hóa đơn',
   })
   @ApiParam({
     name: 'id',
-    description: 'ID của người dùng',
+    description: 'ID của hóa đơn',
     example: 1,
   })
   @ApiResponse({
@@ -177,24 +176,24 @@ export class BillController {
   }
 
   /**
-   * API cập nhật thông tin người dùng
+   * API cập nhật thông tin hóa đơn
    *
-   * @param id - ID của người dùng cần cập nhật
+   * @param id - ID của hóa đơn cần cập nhật
    * @param updateBillDto - Dữ liệu cập nhật (có thể là một phần thông tin)
-   * @returns BaseResponseDto<BillResponseDto> - Thông tin người dùng sau khi cập nhật có metadata
+   * @returns BaseResponseDto<BillResponseDto> - Thông tin hóa đơn sau khi cập nhật có metadata
    *
    * HTTP Method: PUT /Bills/:id
    * Params: id (number)
    * Body: UpdateBillDto (partial update)
-   * Response: 200 - BaseResponseDto<BillResponseDto> | 404 - Không tìm thấy | 409 - Email đã tồn tại
+   * Response: 200 - BaseResponseDto<BillResponseDto> | 404 - Không tìm thấy | 409 - Hóa đơn đã tồn tại
    */
   @ApiOperation({
-    summary: 'Cập nhật thông tin người dùng',
-    description: 'Cập nhật thông tin của một người dùng',
+    summary: 'Cập nhật thông tin hóa đơn',
+    description: 'Cập nhật thông tin của một hóa đơn',
   })
   @ApiParam({
     name: 'id',
-    description: 'ID của người dùng',
+    description: 'ID của hóa đơn',
     example: 1,
   })
   @ApiResponse({
@@ -219,22 +218,22 @@ export class BillController {
   }
 
   /**
-   * API xóa mềm người dùng khỏi hệ thống
+   * API xóa mềm hóa đơn khỏi hệ thống
    *
-   * @param id - ID của người dùng cần xóa
+   * @param id - ID của hóa đơn cần xóa
    * @returns BaseResponseDto<null> - Response với metadata xác nhận xóa thành công
    *
    * HTTP Method: DELETE /Bills/:id
    * Params: id (number)
-   * Response: 204 - BaseResponseDto<null> | 404 - Không tìm thấy người dùng
+   * Response: 204 - BaseResponseDto<null> | 404 - Không tìm thấy hóa đơn
    */
   @ApiOperation({
-    summary: 'Xóa người dùng',
-    description: 'Xóa mềm một người dùng khỏi hệ thống',
+    summary: 'Xóa hóa đơn',
+    description: 'Xóa mềm một hóa đơn khỏi hệ thống',
   })
   @ApiParam({
     name: 'id',
-    description: 'ID của người dùng',
+    description: 'ID của hóa đơn',
     example: 1,
   })
   @ApiResponse({
