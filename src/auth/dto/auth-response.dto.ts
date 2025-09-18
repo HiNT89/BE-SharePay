@@ -13,4 +13,22 @@ export class AuthResponseDto {
     type: UserResponseDto,
   })
   user: UserResponseDto;
+
+  @ApiProperty({
+    description: 'Thời gian token hết hạn (Unix timestamp)',
+    example: 1640995200,
+  })
+  expiresAt: number;
+
+  @ApiProperty({
+    description: 'Loại token',
+    example: 'Bearer',
+  })
+  tokenType: string;
+
+  @ApiProperty({
+    description: 'Thời gian đăng nhập',
+    example: '2024-01-01T00:00:00.000Z',
+  })
+  loginTime: string;
 }

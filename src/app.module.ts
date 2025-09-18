@@ -1,35 +1,70 @@
+// Import decorator Module từ NestJS
 import { Module } from '@nestjs/common';
+
+// Import Config module để đọc environment variables
 import { ConfigModule, ConfigService } from '@nestjs/config';
+
+// Import TypeORM module để kết nối database
 import { TypeOrmModule } from '@nestjs/typeorm';
+
+// Import các components của App module
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+
+// Import các feature modules
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 
+/**
+ * App Module - Root module của ứng dụng NestJS
+ *
+ * Chức năng:
+ * - Cấu hình các module con (UserModule, AuthModule)
+ * - Thiết lập database connection với TypeORM
+ * - Cấu hình environment variables với ConfigModule
+ * - Cung cấp AppController và AppService
+ */
 @Module({
   imports: [
+    /**
+     * Cấu hình ConfigModule global
+     * Cho phép đọc environment variables (.env file) từ mọi nơi trong ứng dụng
+     */
     ConfigModule.forRoot({
-      isGlobal: true,
+      isGlobal: true, // Module có thể được sử dụng globally mà không cần import
     }),
+
+    /**
+     * Cấu hình TypeORM với async configuration
+     * Kết nối PostgreSQL database với thông tin từ environment variables
+     */
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
+      imports: [ConfigModule], // Import ConfigModule để sử dụng ConfigService
       useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get('DB_HOST'),
-        port: +(configService.get<number>('DB_PORT') ?? 5432),
-        username: configService.get('DB_USERNAME'),
-        password: configService.get('DB_PASSWORD'),
-        database: configService.get('DB_NAME'),
+        type: 'postgres', // Database type
+        host: configService.get('DB_HOST'), // Database host
+        port: +(configService.get<number>('DB_PORT') ?? 5432), // Database port (convert to number)
+        username: configService.get('DB_USERNAME'), // Database username
+        password: configService.get('DB_PASSWORD'), // Database password
+        database: configService.get('DB_NAME'), // Database name
+
+        // Tự động load tất cả entities từ các file .entity.ts/.js
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
+
+        // Tự động sync database schema (chỉ dùng trong development)
         synchronize: configService.get('NODE_ENV') !== 'production',
+
+        // Enable SQL logging trong development mode
         logging: configService.get('NODE_ENV') === 'development',
       }),
-      inject: [ConfigService],
+      inject: [ConfigService], // Inject ConfigService vào factory function
     }),
-    UserModule,
-    AuthModule,
+
+    // Import các feature modules
+    UserModule, // Module quản lý người dùng
+    AuthModule, // Module xử lý authentication
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController], // Root controller
+  providers: [AppService], // Root service
 })
 export class AppModule {}

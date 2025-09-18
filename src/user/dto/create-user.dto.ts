@@ -1,3 +1,4 @@
+// Import các validator từ class-validator để validate dữ liệu đầu vào
 import {
   IsEmail,
   IsString,
@@ -7,10 +8,25 @@ import {
   IsEnum,
   IsBoolean,
 } from 'class-validator';
+
+// Import decorator để tạo Swagger documentation
 import { ApiProperty } from '@nestjs/swagger';
+
+// Import enum UserRole từ entity
 import { UserRole } from '../user.entity';
 
+/**
+ * DTO (Data Transfer Object) cho việc tạo người dùng mới
+ *
+ * Chức năng:
+ * - Định nghĩa cấu trúc dữ liệu đầu vào cho API tạo user
+ * - Validate dữ liệu với class-validator
+ * - Tạo Swagger documentation tự động
+ */
 export class CreateUserDto {
+  /**
+   * Email của người dùng - phải là email hợp lệ và duy nhất
+   */
   @ApiProperty({
     description: 'Email của người dùng',
     example: 'user@example.com',
@@ -19,6 +35,9 @@ export class CreateUserDto {
   @IsNotEmpty({ message: 'Email không được để trống' })
   email: string;
 
+  /**
+   * Tên của người dùng
+   */
   @ApiProperty({
     description: 'Tên của người dùng',
     example: 'Nguyễn',
@@ -27,6 +46,9 @@ export class CreateUserDto {
   @IsNotEmpty({ message: 'Tên không được để trống' })
   firstName: string;
 
+  /**
+   * Họ của người dùng
+   */
   @ApiProperty({
     description: 'Họ của người dùng',
     example: 'Văn A',
@@ -35,6 +57,9 @@ export class CreateUserDto {
   @IsNotEmpty({ message: 'Họ không được để trống' })
   lastName: string;
 
+  /**
+   * Mật khẩu - tối thiểu 6 ký tự (sẽ được hash tự động)
+   */
   @ApiProperty({
     description: 'Mật khẩu (tối thiểu 6 ký tự)',
     example: 'password123',
@@ -45,6 +70,9 @@ export class CreateUserDto {
   @IsNotEmpty({ message: 'Mật khẩu không được để trống' })
   password: string;
 
+  /**
+   * Vai trò của người dùng - optional, mặc định là USER
+   */
   @ApiProperty({
     description: 'Vai trò của người dùng',
     enum: UserRole,
