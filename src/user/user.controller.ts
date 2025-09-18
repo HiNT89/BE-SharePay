@@ -6,7 +6,7 @@ import {
   Body,
   Param,
   Delete,
-  ParseUUIDPipe,
+  ParseIntPipe,
   HttpCode,
   HttpStatus,
   Put,
@@ -146,11 +146,11 @@ export class UserController {
   /**
    * API lấy thông tin chi tiết của một người dùng
    *
-   * @param id - UUID của người dùng cần lấy thông tin
+   * @param id - ID của người dùng cần lấy thông tin
    * @returns BaseResponseDto<UserResponseDto> - Thông tin chi tiết của người dùng có metadata
    *
    * HTTP Method: GET /users/:id
-   * Params: id (UUID) - được validate bằng ParseUUIDPipe
+   * Params: id (number) - được validate bằng ParseIntPipe
    * Response: 200 - BaseResponseDto<UserResponseDto> | 404 - Không tìm thấy người dùng
    */
   @ApiOperation({
@@ -159,8 +159,8 @@ export class UserController {
   })
   @ApiParam({
     name: 'id',
-    description: 'UUID của người dùng',
-    example: '123e4567-e89b-12d3-a456-426614174000',
+    description: 'ID của người dùng',
+    example: 1,
   })
   @ApiResponse({
     status: 200,
@@ -173,7 +173,7 @@ export class UserController {
   })
   @Get(':id')
   async findOne(
-    @Param('id', ParseUUIDPipe) id: string, // ParseUUIDPipe tự động validate format UUID
+    @Param('id', ParseIntPipe) id: number, // ParseIntPipe tự động validate format number
   ): Promise<BaseResponseDto<UserResponseDto>> {
     return this.userService.findOne(id);
   }
@@ -181,12 +181,12 @@ export class UserController {
   /**
    * API cập nhật thông tin người dùng
    *
-   * @param id - UUID của người dùng cần cập nhật
+   * @param id - ID của người dùng cần cập nhật
    * @param updateUserDto - Dữ liệu cập nhật (có thể là một phần thông tin)
    * @returns BaseResponseDto<UserResponseDto> - Thông tin người dùng sau khi cập nhật có metadata
    *
    * HTTP Method: PUT /users/:id
-   * Params: id (UUID)
+   * Params: id (number)
    * Body: UpdateUserDto (partial update)
    * Response: 200 - BaseResponseDto<UserResponseDto> | 404 - Không tìm thấy | 409 - Email đã tồn tại
    */
@@ -196,8 +196,8 @@ export class UserController {
   })
   @ApiParam({
     name: 'id',
-    description: 'UUID của người dùng',
-    example: '123e4567-e89b-12d3-a456-426614174000',
+    description: 'ID của người dùng',
+    example: 1,
   })
   @ApiResponse({
     status: 200,
@@ -214,30 +214,30 @@ export class UserController {
   })
   @Put(':id') // PUT cho phép cập nhật một phần dữ liệu
   async update(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto, // UpdateUserDto kế thừa từ CreateUserDto với PartialType
   ): Promise<BaseResponseDto<UserResponseDto>> {
     return this.userService.update(id, updateUserDto);
   }
 
   /**
-   * API xóa người dùng khỏi hệ thống
+   * API xóa mềm người dùng khỏi hệ thống
    *
-   * @param id - UUID của người dùng cần xóa
+   * @param id - ID của người dùng cần xóa
    * @returns BaseResponseDto<null> - Response với metadata xác nhận xóa thành công
    *
    * HTTP Method: DELETE /users/:id
-   * Params: id (UUID)
+   * Params: id (number)
    * Response: 204 - BaseResponseDto<null> | 404 - Không tìm thấy người dùng
    */
   @ApiOperation({
     summary: 'Xóa người dùng',
-    description: 'Xóa một người dùng khỏi hệ thống',
+    description: 'Xóa mềm một người dùng khỏi hệ thống',
   })
   @ApiParam({
     name: 'id',
-    description: 'UUID của người dùng',
-    example: '123e4567-e89b-12d3-a456-426614174000',
+    description: 'ID của người dùng',
+    example: 1,
   })
   @ApiResponse({
     status: 200,
@@ -249,7 +249,7 @@ export class UserController {
   })
   @Delete(':id')
   async remove(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseIntPipe) id: number,
   ): Promise<BaseResponseDto<null>> {
     return this.userService.remove(id);
   }

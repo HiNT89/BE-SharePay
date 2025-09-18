@@ -18,14 +18,14 @@ import { UserRole } from '../user.entity';
  */
 export class UserResponseDto {
   /**
-   * UUID của người dùng
+   * ID của người dùng
    */
   @ApiProperty({
     description: 'ID của người dùng',
-    example: '123e4567-e89b-12d3-a456-426614174000',
+    example: 1,
   })
   @Expose()
-  id: string;
+  id: number;
 
   /**
    * Email của người dùng

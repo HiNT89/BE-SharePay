@@ -54,7 +54,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
    */
   async validate(payload: any) {
     // Lấy user từ database theo ID trong payload (sub = subject = user ID)
-    const user = await this.userService.findById(payload.sub);
+    // Convert payload.sub to number vì JWT payload serializes numbers as strings
+    const userId = parseInt(payload.sub, 10);
+    const user = await this.userService.findById(userId);
 
     // Kiểm tra user tồn tại và đang hoạt động
     if (!user || !user.isActive) {

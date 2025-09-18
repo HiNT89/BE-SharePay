@@ -154,12 +154,12 @@ export class UserService {
   /**
    * Tìm người dùng theo ID (sử dụng nội bộ)
    *
-   * @param id - UUID của người dùng
+   * @param id - ID của người dùng
    * @returns User entity hoặc null nếu không tìm thấy
    * @throws BadRequestException - Nếu ID không hợp lệ
    */
-  async findById(id: string): Promise<User | null> {
-    if (!id) {
+  async findById(id: number): Promise<User | null> {
+    if (!id || id <= 0) {
       throw new BadRequestException('ID người dùng không hợp lệ');
     }
 
@@ -183,11 +183,11 @@ export class UserService {
   /**
    * Lấy thông tin chi tiết một người dùng (public API)
    *
-   * @param id - UUID của người dùng
+   * @param id - ID của người dùng
    * @returns BaseResponseDto<UserResponseDto> - Thông tin người dùng có metadata
    * @throws NotFoundException - Nếu không tìm thấy người dùng
    */
-  async findOne(id: string): Promise<BaseResponseDto<UserResponseDto>> {
+  async findOne(id: number): Promise<BaseResponseDto<UserResponseDto>> {
     const user = await this.findById(id);
 
     if (!user) {
@@ -208,11 +208,11 @@ export class UserService {
   /**
    * Lấy thông tin chi tiết một người dùng (sử dụng nội bộ - không có metadata)
    *
-   * @param id - UUID của người dùng
+   * @param id - ID của người dùng
    * @returns UserResponseDto - Thông tin người dùng đơn giản
    * @throws NotFoundException - Nếu không tìm thấy người dùng
    */
-  async findOneSimple(id: string): Promise<UserResponseDto> {
+  async findOneSimple(id: number): Promise<UserResponseDto> {
     const user = await this.findById(id);
 
     if (!user) {
@@ -228,14 +228,14 @@ export class UserService {
   /**
    * Cập nhật thông tin người dùng
    *
-   * @param id - UUID của người dùng cần cập nhật
+   * @param id - ID của người dùng cần cập nhật
    * @param updateUserDto - Dữ liệu cập nhật (partial)
    * @returns BaseResponseDto<UserResponseDto> - Thông tin người dùng sau khi cập nhật có metadata
    * @throws NotFoundException - Nếu không tìm thấy người dùng
    * @throws ConflictException - Nếu email mới đã tồn tại
    */
   async update(
-    id: string,
+    id: number,
     updateUserDto: UpdateUserDto,
   ): Promise<BaseResponseDto<UserResponseDto>> {
     const user = await this.findById(id);
@@ -274,21 +274,21 @@ export class UserService {
   }
 
   /**
-   * Xóa người dùng khỏi hệ thống
+   * Xóa mềm người dùng khỏi hệ thống
    *
-   * @param id - UUID của người dùng cần xóa
+   * @param id - ID của người dùng cần xóa
    * @returns BaseResponseDto<null> - Response với metadata xác nhận xóa thành công
    * @throws NotFoundException - Nếu không tìm thấy người dùng
    */
-  async remove(id: string): Promise<BaseResponseDto<null>> {
+  async remove(id: number): Promise<BaseResponseDto<null>> {
     const user = await this.findById(id);
 
     if (!user) {
       throw new NotFoundException('Không tìm thấy người dùng');
     }
 
-    // Xóa vĩnh viễn người dùng khỏi database
-    await this.userRepository.remove(user);
+    // Xóa mềm người dùng (soft delete)
+    await this.userRepository.softRemove(user);
 
     return ResponseHelper.success(null, 'Xóa người dùng thành công', 204);
   }
@@ -296,11 +296,11 @@ export class UserService {
   /**
    * Cập nhật password cho người dùng (sử dụng cho authentication)
    *
-   * @param id - UUID của người dùng
+   * @param id - ID của người dùng
    * @param newPassword - Password mới (đã được hash)
    * @throws NotFoundException - Nếu không tìm thấy người dùng
    */
-  async updatePassword(id: string, newPassword: string): Promise<void> {
+  async updatePassword(id: number, newPassword: string): Promise<void> {
     const user = await this.findById(id);
 
     if (!user) {

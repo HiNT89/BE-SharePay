@@ -12,7 +12,6 @@ export class AuthResponseDto {
     description: 'Thông tin người dùng',
     type: UserResponseDto,
   })
-  user: UserResponseDto;
 
   @ApiProperty({
     description: 'Thời gian token hết hạn (Unix timestamp)',

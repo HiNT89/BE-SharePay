@@ -5,6 +5,7 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  DeleteDateColumn,
   BeforeInsert,
   BeforeUpdate,
 } from 'typeorm';
@@ -35,10 +36,10 @@ export enum UserRole {
 @Entity('users') // Tên bảng trong database
 export class User {
   /**
-   * Primary key - UUID tự động sinh
+   * Primary key - ID tự tăng
    */
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   /**
    * Email của người dùng - phải duy nhất trong hệ thống
@@ -95,6 +96,12 @@ export class User {
    */
   @UpdateDateColumn()
   updatedAt: Date;
+
+  /**
+   * Thời gian xóa mềm - null nếu chưa bị xóa
+   */
+  @DeleteDateColumn()
+  deletedAt?: Date;
 
   /**
    * Hook tự động hash password trước khi insert hoặc update

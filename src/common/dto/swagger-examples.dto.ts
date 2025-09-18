@@ -85,7 +85,7 @@ export class AuthResponseExampleDto {
     example: {
       accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
       user: {
-        id: '123e4567-e89b-12d3-a456-426614174000',
+        id: 1,
         email: 'user@example.com',
         firstName: 'Nguyễn',
         lastName: 'Văn A',
@@ -126,7 +126,7 @@ export class UserResponseExampleDto {
   @ApiProperty({
     description: 'Thông tin người dùng',
     example: {
-      id: '123e4567-e89b-12d3-a456-426614174000',
+      id: 1,
       email: 'user@example.com',
       firstName: 'Nguyễn',
       lastName: 'Văn A',
@@ -164,7 +164,7 @@ export class UsersListResponseExampleDto {
     description: 'Danh sách người dùng',
     example: [
       {
-        id: '123e4567-e89b-12d3-a456-426614174000',
+        id: 1,
         email: 'user1@example.com',
         firstName: 'Nguyễn',
         lastName: 'Văn A',
@@ -174,7 +174,7 @@ export class UsersListResponseExampleDto {
         updatedAt: '2024-01-01T00:00:00.000Z',
       },
       {
-        id: '456e7890-e89b-12d3-a456-426614174001',
+        id: 2,
         email: 'user2@example.com',
         firstName: 'Trần',
         lastName: 'Thị B',

@@ -97,7 +97,7 @@ export class AuthService {
 
     const authResponse: AuthResponseDto = {
       accessToken,
-      user: userResponse,
+      // user: userResponse,
       expiresAt,
       tokenType: 'Bearer',
       loginTime: new Date().toISOString(),
@@ -128,7 +128,7 @@ export class AuthService {
 
     const authResponse: AuthResponseDto = {
       accessToken,
-      user, // user đã được chuyển đổi sang UserResponseDto trong UserService
+
       expiresAt,
       tokenType: 'Bearer',
       loginTime: new Date().toISOString(),
@@ -140,11 +140,11 @@ export class AuthService {
   /**
    * Lấy thông tin profile của người dùng hiện tại
    *
-   * @param userId - UUID của người dùng (từ JWT token)
+   * @param userId - ID của người dùng (từ JWT token)
    * @returns BaseResponseDto<UserResponseDto> - Thông tin chi tiết người dùng có metadata
    * @throws NotFoundException - Nếu không tìm thấy user (từ UserService)
    */
-  async getProfile(userId: string): Promise<BaseResponseDto<UserResponseDto>> {
+  async getProfile(userId: number): Promise<BaseResponseDto<UserResponseDto>> {
     return this.userService.findOne(userId);
   }
 }
