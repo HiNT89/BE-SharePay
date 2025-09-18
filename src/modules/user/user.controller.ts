@@ -7,8 +7,6 @@ import {
   Param,
   Delete,
   ParseIntPipe,
-  HttpCode,
-  HttpStatus,
   Put,
   Query,
 } from '@nestjs/common';
@@ -30,17 +28,17 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserResponseDto } from './dto/user-response.dto';
 
 // Import common DTOs cho pagination và response
-import { PaginationQueryDto } from '../common/dto/pagination-query.dto';
+import { PaginationQueryDto } from '@/common/dto/pagination-query.dto';
 import {
   BaseResponseDto,
   PaginatedResponseDto,
-} from '../common/dto/base-response.dto';
+} from '@/common/dto/base-response.dto';
 
 // Import example DTOs cho Swagger
 import {
-  UserResponseExampleDto,
-  UsersListResponseExampleDto,
-} from '../common/dto/swagger-examples.dto';
+  ResponseExampleDto,
+  ListResponseExampleDto,
+} from './dto/swagger-examples.dto';
 
 /**
  * Controller xử lý các API endpoints liên quan đến quản lý người dùng
@@ -78,7 +76,7 @@ export class UserController {
   @ApiResponse({
     status: 201,
     description: 'Tạo người dùng thành công',
-    type: UserResponseExampleDto,
+    type: ResponseExampleDto,
   })
   @ApiResponse({
     status: 409,
@@ -122,19 +120,19 @@ export class UserController {
     name: 'sortBy',
     required: false,
     description: 'Sắp xếp theo field',
-    example: 'createdAt',
+    example: 'id',
   })
   @ApiQuery({
     name: 'sortOrder',
     required: false,
     description: 'Thứ tự sắp xếp',
     enum: ['ASC', 'DESC'],
-    example: 'DESC',
+    example: 'ASC',
   })
   @ApiResponse({
     status: 200,
     description: 'Lấy danh sách thành công',
-    type: UsersListResponseExampleDto,
+    type: ListResponseExampleDto,
   })
   @Get()
   async findAll(
@@ -165,7 +163,7 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: 'Lấy thông tin thành công',
-    type: UserResponseExampleDto,
+    type: ResponseExampleDto,
   })
   @ApiResponse({
     status: 404,
@@ -202,7 +200,7 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: 'Cập nhật thành công',
-    type: UserResponseExampleDto,
+    type: ResponseExampleDto,
   })
   @ApiResponse({
     status: 404,

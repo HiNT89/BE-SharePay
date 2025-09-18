@@ -7,13 +7,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 // Import TypeORM module để kết nối database
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-// Import các components của App module
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-
 // Import các feature modules
-import { UserModule } from './user/user.module';
-import { AuthModule } from './auth/auth.module';
+import { UserModule } from '@/modules/user/user.module';
+import { AuthModule } from '@/modules/auth/auth.module';
+import { BillModule } from '@/modules/bill/bill.module';
 
 /**
  * App Module - Root module của ứng dụng NestJS
@@ -63,8 +60,7 @@ import { AuthModule } from './auth/auth.module';
     // Import các feature modules
     UserModule, // Module quản lý người dùng
     AuthModule, // Module xử lý authentication
+    BillModule, // Module quản lý hóa đơn
   ],
-  controllers: [AppController], // Root controller
-  providers: [AppService], // Root service
 })
 export class AppModule {}

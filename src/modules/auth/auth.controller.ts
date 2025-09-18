@@ -26,13 +26,13 @@ import { UserResponseDto } from '../user/dto/user-response.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
 // Import common DTOs cho response
-import { BaseResponseDto } from '../common/dto/base-response.dto';
+import { BaseResponseDto } from '@/common/dto/base-response.dto';
 
 // Import example DTOs cho Swagger
 import {
   AuthResponseExampleDto,
-  UserResponseExampleDto,
-} from '../common/dto/swagger-examples.dto';
+  ResponseExampleDto,
+} from '@/common/dto/swagger-examples.dto';
 
 /**
  * Controller xử lý các API endpoints liên quan đến authentication
@@ -126,7 +126,7 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: 'Lấy thông tin thành công',
-    type: UserResponseExampleDto,
+    type: ResponseExampleDto,
   })
   @ApiResponse({
     status: 401,

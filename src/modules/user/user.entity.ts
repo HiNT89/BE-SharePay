@@ -8,8 +8,11 @@ import {
   DeleteDateColumn,
   BeforeInsert,
   BeforeUpdate,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 
+import { Bill } from '@/modules/bill/bill.entity';
 // Import bcrypt để hash password
 import * as bcrypt from 'bcryptjs';
 
@@ -60,6 +63,11 @@ export class User {
   lastName: string;
 
   /**
+   * Ảnh đại diện của người dùng
+   */
+  @Column({ nullable: true })
+  avatar_url: string;
+  /**
    * Password đã được hash
    * @Exclude() - Loại bỏ khỏi response JSON để bảo mật
    */
@@ -77,6 +85,19 @@ export class User {
     default: UserRole.USER,
   })
   role: UserRole;
+  /**
+   * Thông tin bank người dùng dưới dạng JSON
+   * Có thể bao gồm các trường như accountNumber, bankName, bankCode
+   * Ví dụ: { "accountNumber": "123456789", "bankName": "ABC Bank", "bankCode": "001" }
+   * Trường này có thể null nếu người dùng chưa cung cấp thông tin bank
+   */
+  @Column('jsonb', { nullable: true })
+  bankInfo: {
+    accountNumber: string;
+    bankName: string;
+    bankCode: string;
+    accountHolderName: string;
+  };
 
   /**
    * Trạng thái hoạt động của tài khoản
@@ -103,6 +124,13 @@ export class User {
   @DeleteDateColumn()
   deletedAt?: Date;
 
+  @ManyToMany(() => Bill, (t) => t.users, { cascade: true })
+  @JoinTable({
+    name: 'user_bills',
+    joinColumn: { name: 'user_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'bill_id', referencedColumnName: 'id' },
+  })
+  bills: Bill[];
   /**
    * Hook tự động hash password trước khi insert hoặc update
    * Được gọi tự động bởi TypeORM trước khi lưu vào database

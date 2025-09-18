@@ -17,12 +17,12 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserResponseDto } from './dto/user-response.dto';
 
 // Import common DTOs cho pagination và response
-import { PaginationQueryDto } from '../common/dto/pagination-query.dto';
+import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 import {
   BaseResponseDto,
   PaginatedResponseDto,
   ResponseHelper,
-} from '../common/dto/base-response.dto';
+} from '../../common/dto/base-response.dto';
 
 // Import class-transformer để chuyển đổi object
 import { plainToClass } from 'class-transformer';

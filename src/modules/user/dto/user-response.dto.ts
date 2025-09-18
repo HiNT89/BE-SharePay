@@ -58,6 +58,16 @@ export class UserResponseDto {
   lastName: string;
 
   /**
+   * Link ảnh đại diện của người dùng
+   */
+  @ApiProperty({
+    description: 'Link ảnh đại diện của người dùng',
+    example: 'https://example.com/avatar.jpg',
+  })
+  @Expose()
+  avatar_url: string;
+
+  /**
    * Vai trò của người dùng trong hệ thống
    */
   @ApiProperty({
@@ -76,6 +86,23 @@ export class UserResponseDto {
   })
   @Expose()
   isActive: boolean;
+
+  /**
+   * Thông tin ngân hàng của người dùng - optional
+   * Có thể bao gồm tên ngân hàng, số tài khoản, chi nhánh, v.v.
+   */
+  @ApiProperty({
+    description: 'Thông tin ngân hàng của người dùng dưới dạng JSON',
+    example: {
+      accountNumber: '123456789',
+      bankName: 'Ngân hàng A',
+      bankCode: 'B001',
+      accountHolderName: 'Nguyen Van A',
+    },
+    required: false,
+  })
+  @Expose()
+  bankInfo: Record<string, any>;
 
   /**
    * Thời gian tạo tài khoản

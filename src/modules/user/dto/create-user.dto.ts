@@ -6,7 +6,6 @@ import {
   MinLength,
   IsOptional,
   IsEnum,
-  IsBoolean,
 } from 'class-validator';
 
 // Import decorator để tạo Swagger documentation
@@ -71,6 +70,23 @@ export class CreateUserDto {
   password: string;
 
   /**
+   * Thông tin ngân hàng của người dùng - optional
+   * Có thể bao gồm tên ngân hàng, số tài khoản, chi nhánh, v.v.
+   */
+  @ApiProperty({
+    description: 'Thông tin ngân hàng của người dùng dưới dạng JSON',
+    example: {
+      accountNumber: '123456789',
+      bankName: 'Ngân hàng A',
+      bankCode: 'B001',
+      accountHolderName: 'Nguyễn Văn A',
+    },
+    required: false,
+  })
+  @IsOptional()
+  bankInfo?: Record<string, any>;
+
+  /**
    * Vai trò của người dùng - optional, mặc định là USER
    */
   @ApiProperty({
@@ -82,4 +98,16 @@ export class CreateUserDto {
   @IsOptional()
   @IsEnum(UserRole, { message: 'Vai trò không hợp lệ' })
   role?: UserRole;
+
+  /**
+   * Ảnh đại diện của người dùng - optional
+   */
+  @ApiProperty({
+    description: 'Ảnh đại diện của người dùng',
+    example: 'https://example.com/avatar.jpg',
+    required: false,
+  })
+  @IsOptional()
+  @IsString({ message: 'URL ảnh đại diện phải là chuỗi' })
+  avatar_url?: string;
 }

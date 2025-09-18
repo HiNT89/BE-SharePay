@@ -5,9 +5,10 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 // Import các components của User module
-import { UserService } from './user.service';
-import { UserController } from './user.controller';
-import { User } from './user.entity';
+import { BillService } from './bill.service';
+import { BillController } from './bill.controller';
+import { Bill } from './bill.entity';
+import { User } from '@/modules/user/user.entity';
 
 /**
  * User Module - Module quản lý người dùng
@@ -20,11 +21,11 @@ import { User } from './user.entity';
  */
 @Module({
   imports: [
-    // Đăng ký User entity để có thể inject UserRepository
-    TypeOrmModule.forFeature([User]),
+    // Đăng ký Bill entity để có thể inject BillRepository
+    TypeOrmModule.forFeature([Bill, User]),
   ],
-  controllers: [UserController], // Controller để handle API endpoints
-  providers: [UserService], // Service chứa business logic
-  exports: [UserService], // Export UserService để AuthModule có thể sử dụng
+  controllers: [BillController], // Controller để handle API endpoints
+  providers: [BillService], // Service chứa business logic
+  exports: [BillService], // Export BillService để AuthModule có thể sử dụng
 })
-export class UserModule {}
+export class BillModule {}

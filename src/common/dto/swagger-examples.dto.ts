@@ -122,7 +122,7 @@ export class AuthResponseExampleDto {
   };
 }
 
-export class UserResponseExampleDto {
+export class ResponseExampleDto {
   @ApiProperty({
     description: 'Thông tin người dùng',
     example: {
@@ -159,7 +159,7 @@ export class UserResponseExampleDto {
   };
 }
 
-export class UsersListResponseExampleDto {
+export class ListResponseExampleDto {
   @ApiProperty({
     description: 'Danh sách người dùng',
     example: [

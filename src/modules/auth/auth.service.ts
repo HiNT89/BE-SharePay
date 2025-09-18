@@ -11,13 +11,13 @@ import { UserService } from '../user/user.service';
 import { User } from '../user/user.entity';
 import { RegisterDto, LoginDto } from './dto/auth.dto';
 import { AuthResponseDto } from './dto/auth-response.dto';
-import { UserResponseDto } from '../user/dto/user-response.dto';
+import { UserResponseDto } from '@/modules/user/dto/user-response.dto';
 
 // Import response helpers
 import {
   BaseResponseDto,
   ResponseHelper,
-} from '../common/dto/base-response.dto';
+} from '@/common/dto/base-response.dto';
 
 // Import class-transformer
 import { plainToClass } from 'class-transformer';

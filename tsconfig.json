@@ -10,6 +10,10 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
+    "paths": {
+      "@/*": ["./src/*"],
+      "react-data-entry": ["./node_modules/react-data-entry"]
+    },
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": true,
