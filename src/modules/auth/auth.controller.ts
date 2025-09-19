@@ -29,10 +29,7 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 import { BaseResponseDto } from '@/common/dto/base-response.dto';
 
 // Import example DTOs cho Swagger
-import {
-  AuthResponseExampleDto,
-  ResponseExampleDto,
-} from '@/common/dto/swagger-examples.dto';
+import { AuthResponseExampleDto } from '@/common/dto/swagger-examples.dto';
 
 /**
  * Controller xử lý các API endpoints liên quan đến authentication
@@ -126,7 +123,7 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: 'Lấy thông tin thành công',
-    type: ResponseExampleDto,
+    type: 'any',
   })
   @ApiResponse({
     status: 401,

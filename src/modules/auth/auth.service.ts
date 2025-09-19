@@ -113,9 +113,7 @@ export class AuthService {
    * @returns BaseResponseDto<AuthResponseDto> - Chứa access token và thông tin user mới tạo có metadata
    * @throws ConflictException - Nếu email đã tồn tại (từ UserService)
    */
-  async register(
-    registerDto: RegisterDto,
-  ): Promise<BaseResponseDto<AuthResponseDto>> {
+  async register(registerDto: any): Promise<BaseResponseDto<AuthResponseDto>> {
     // Tạo user mới thông qua UserService (sử dụng method đơn giản)
     const user = await this.userService.createSimple(registerDto);
 

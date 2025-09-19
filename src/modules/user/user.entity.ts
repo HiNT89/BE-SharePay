@@ -51,16 +51,10 @@ export class User {
   email: string;
 
   /**
-   * Tên của người dùng
+   * Tên đầy đủ của người dùng
    */
   @Column()
-  firstName: string;
-
-  /**
-   * Họ của người dùng
-   */
-  @Column()
-  lastName: string;
+  full_name: string;
 
   /**
    * Ảnh đại diện của người dùng

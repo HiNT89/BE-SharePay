@@ -45,7 +45,7 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
     required: false,
   })
   @IsOptional()
-  bankInfo?: Record<string, any>;
+  bank_info?: Record<string, any>;
 
   /**
    * Thông tin ngân hàng của người dùng - optional
@@ -63,21 +63,10 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
    * Tên của người dùng - optional
    */
   @ApiProperty({
-    description: 'Ảnh đại diện của người dùng',
-    example: 'https://example.com/avatar.jpg',
+    description: 'Tên đầy đủ của người dùng',
+    example: 'Nguyễn Văn A',
     required: false,
   })
   @IsOptional()
-  lastName?: string;
-
-  /**
-   * Họ của người dùng - optional
-   */
-  @ApiProperty({
-    description: 'Ảnh đại diện của người dùng',
-    example: 'https://example.com/avatar.jpg',
-    required: false,
-  })
-  @IsOptional()
-  firstName?: string;
+  full_name?: string;
 }
