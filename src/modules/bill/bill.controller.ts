@@ -11,10 +11,9 @@ import {
   HttpStatus,
   Put,
 } from '@nestjs/common';
-import { BaseController } from '@/common/base/base.controller';
 import { BillService } from './bill.service';
 import { Bill } from './entities/bill.entity';
-import { CreateBillDto, UpdateBillDto } from './dto/bill.dto';
+import { CreateBillDto, UpdateBillDto, BillResponseDto } from './dto/bill.dto';
 import { BaseResponseDto, PaginationDto } from '@/common/base/base.common.dto';
 import {
   ResponseCode,
@@ -23,21 +22,33 @@ import {
 
 @Controller('bill')
 @UseInterceptors(ClassSerializerInterceptor)
-export class BillController extends BaseController<
-  Bill,
-  CreateBillDto,
-  UpdateBillDto
-> {
-  constructor(private readonly userService: BillService) {
-    super(userService);
-  }
+export class BillController {
+  constructor(private readonly billService: BillService) {}
 
   @Get()
   async findAll(
     @Query() paginationDto: PaginationDto,
-  ): Promise<BaseResponseDto<Bill[]>> {
+  ): Promise<BaseResponseDto<BillResponseDto[]>> {
     try {
-      return await this.userService.findAll(paginationDto);
+      return await this.billService.findAllBills(paginationDto);
+    } catch (error) {
+      throw new HttpException(
+        BaseResponseDto.error(
+          error.message || RESPONSE_MESSAGES.INTERNAL_ERROR,
+          ResponseCode.INTERNAL_SERVER_ERROR,
+        ),
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Get(':id')
+  async findOne(
+    @Param('id') id: string,
+  ): Promise<BaseResponseDto<BillResponseDto | null>> {
+    try {
+      const data = await this.billService.findOneBill(+id);
+      return BaseResponseDto.success(data, RESPONSE_MESSAGES.RETRIEVED_SUCCESS);
     } catch (error) {
       throw new HttpException(
         BaseResponseDto.error(
@@ -54,7 +65,7 @@ export class BillController extends BaseController<
     @Body() createBillDto: CreateBillDto,
   ): Promise<BaseResponseDto<Bill | null>> {
     try {
-      const data = await this.userService.createBill(createBillDto);
+      const data = await this.billService.createBill(createBillDto);
       return BaseResponseDto.success(
         data,
         RESPONSE_MESSAGES.CREATED_SUCCESS,
@@ -77,7 +88,7 @@ export class BillController extends BaseController<
     @Body() updateBillDto: UpdateBillDto,
   ): Promise<BaseResponseDto<Bill | null>> {
     try {
-      const data = await this.userService.updateBill(+id, updateBillDto);
+      const data = await this.billService.updateBill(+id, updateBillDto);
       return BaseResponseDto.success(data, RESPONSE_MESSAGES.UPDATED_SUCCESS);
     } catch (error) {
       throw new HttpException(

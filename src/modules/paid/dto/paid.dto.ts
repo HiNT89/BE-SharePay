@@ -13,7 +13,7 @@ export class CreatePaidDto {
   user_id: number;
 
   @IsNumber()
-  bill_id_item: number;
+  bill_item_id: number;
 }
 
 export class UpdatePaidDto {
@@ -27,7 +27,7 @@ export class UpdatePaidDto {
   user_id: number;
 
   @IsNumber()
-  bill_id_item: number;
+  bill_item_id: number;
 }
 
 export class PaidResponseDto extends BaseResponseDto {

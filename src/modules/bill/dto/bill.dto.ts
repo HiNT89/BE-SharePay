@@ -1,7 +1,7 @@
 import { IsString, IsNumber, IsOptional } from 'class-validator';
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import { BaseResponseDto } from '@/common/base/base.response.dto';
-import { Optional } from '@nestjs/common';
+import { UserResponseDto } from '@/modules/user/dto/user.dto';
 
 export class CreateBillDto {
   @IsNumber()
@@ -40,18 +40,25 @@ export class UpdateBillDto {
 }
 
 export class BillResponseDto extends BaseResponseDto {
-  @IsString()
-  note: string;
+  @Expose()
+  title: string;
+
+  @Expose()
+  currency_code: string;
 
   @Expose()
   total_amount: number;
 
   @Expose()
-  title: string;
+  note: string;
+
+  @Expose()
+  imageUrl?: string;
+
+  @Expose()
+  @Type(() => UserResponseDto)
+  user: UserResponseDto; // Sửa từ userCreate thành user để khớp với entity
 
   @Expose()
   userCreateId: number;
-
-  @Expose()
-  imageUrl: string;
 }

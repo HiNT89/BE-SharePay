@@ -25,6 +25,10 @@ export class BankInfoDto {
   @IsOptional()
   @IsString()
   accountHolderName?: string;
+
+  @IsOptional()
+  @IsString()
+  bankCode?: string;
 }
 
 export class CreateUserDto {

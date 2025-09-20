@@ -1,5 +1,6 @@
 import { BaseEntity } from '@/common/base/base.entity';
-import { Entity, Column } from 'typeorm';
+import { Bill } from '@/modules/bill/entities/bill.entity';
+import { Entity, Column, OneToMany } from 'typeorm';
 
 export enum UserRole {
   USER = 'user',
@@ -34,4 +35,7 @@ export class User extends BaseEntity {
 
   @Column({ type: 'text', nullable: true })
   avatarUrl?: string;
+
+  @OneToMany(() => Bill, (bill) => bill.userCreateId)
+  bills: Bill[];
 }
