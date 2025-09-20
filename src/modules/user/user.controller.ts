@@ -1,254 +1,94 @@
-// Import các decorator cần thiết từ NestJS
 import {
   Controller,
   Get,
   Post,
   Body,
+  Patch,
   Param,
   Delete,
-  ParseIntPipe,
-  Put,
   Query,
+  UseInterceptors,
+  ClassSerializerInterceptor,
+  HttpException,
+  HttpStatus,
+  Put,
 } from '@nestjs/common';
-
-// Import các decorator cho Swagger documentation
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiBearerAuth,
-  ApiParam,
-  ApiQuery,
-} from '@nestjs/swagger';
-
-// Import service và các DTO
+import { BaseController } from '@/common/base/base.controller';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { UserResponseDto } from './dto/user-response.dto';
-
-// Import common DTOs cho pagination và response
-import { PaginationQueryDto } from '@/common/dto/pagination-query.dto';
+import { User } from './entities/user.entity';
+import { CreateUserDto, UpdateUserDto, UserResponseDto } from './dto/user.dto';
+import { BaseResponseDto, PaginationDto } from '@/common/base/base.common.dto';
 import {
-  BaseResponseDto,
-  PaginatedResponseDto,
-} from '@/common/dto/base-response.dto';
+  ResponseCode,
+  RESPONSE_MESSAGES,
+} from '@/common/config/response.config';
 
-// Import example DTOs cho Swagger
-import {
-  ResponseExampleDto,
-  ListResponseExampleDto,
-} from './dto/swagger-examples.dto';
+@Controller('user')
+@UseInterceptors(ClassSerializerInterceptor)
+export class UserController extends BaseController<
+  User,
+  CreateUserDto,
+  UpdateUserDto
+> {
+  constructor(private readonly userService: UserService) {
+    super(userService);
+  }
 
-/**
- * Controller xử lý các API endpoints liên quan đến quản lý người dùng
- *
- * Chức năng chính:
- * - Tạo mới người dùng
- * - Lấy danh sách người dùng
- * - Lấy thông tin chi tiết người dùng
- * - Cập nhật thông tin người dùng
- * - Xóa người dùng
- */
-@ApiTags('Users') // Nhóm các API endpoints trong Swagger UI
-@ApiBearerAuth() // Yêu cầu JWT token để truy cập
-@Controller('users') // Định nghĩa base route là /users
-export class UserController {
-  /**
-   * Constructor - Inject UserService để xử lý business logic
-   */
-  constructor(private readonly userService: UserService) {}
+  @Get()
+  async findAll(
+    @Query() paginationDto: PaginationDto,
+  ): Promise<BaseResponseDto<User[]>> {
+    try {
+      return await this.userService.findAll(paginationDto);
+    } catch (error) {
+      throw new HttpException(
+        BaseResponseDto.error(
+          error.message || RESPONSE_MESSAGES.INTERNAL_ERROR,
+          ResponseCode.INTERNAL_SERVER_ERROR,
+        ),
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 
-  /**
-   * API tạo người dùng mới
-   *
-   * @param createUserDto - Dữ liệu tạo người dùng (email, password, name)
-   * @returns BaseResponseDto<UserResponseDto> - Response có metadata
-   *
-   * HTTP Method: POST /users
-   * Body: CreateUserDto
-   * Response: 201 - BaseResponseDto<UserResponseDto> | 409 - Email đã tồn tại
-   */
-  @ApiOperation({
-    summary: 'Tạo người dùng mới',
-    description: 'Tạo một tài khoản người dùng mới (chỉ admin)',
-  })
-  @ApiResponse({
-    status: 201,
-    description: 'Tạo người dùng thành công',
-    type: ResponseExampleDto,
-  })
-  @ApiResponse({
-    status: 409,
-    description: 'Email đã được sử dụng',
-  })
   @Post()
   async create(
     @Body() createUserDto: CreateUserDto,
-  ): Promise<BaseResponseDto<UserResponseDto>> {
-    return this.userService.create(createUserDto);
+  ): Promise<BaseResponseDto<User | null>> {
+    try {
+      const data = await this.userService.createUser(createUserDto);
+      return BaseResponseDto.success(
+        data,
+        RESPONSE_MESSAGES.CREATED_SUCCESS,
+        ResponseCode.CREATED,
+      );
+    } catch (error) {
+      throw new HttpException(
+        BaseResponseDto.error(
+          error.message || RESPONSE_MESSAGES.INTERNAL_ERROR,
+          ResponseCode.BAD_REQUEST,
+        ),
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 
-  /**
-   * API lấy danh sách tất cả người dùng với pagination
-   *
-   * @param paginationQuery - Query parameters cho pagination
-   * @returns PaginatedResponseDto<UserResponseDto> - Danh sách người dùng có pagination metadata
-   *
-   * HTTP Method: GET /users
-   * Query: PaginationQueryDto
-   * Response: 200 - PaginatedResponseDto<UserResponseDto>
-   */
-  @ApiOperation({
-    summary: 'Lấy danh sách tất cả người dùng',
-    description:
-      'Lấy danh sách tất cả người dùng trong hệ thống với pagination',
-  })
-  @ApiQuery({
-    name: 'page',
-    required: false,
-    description: 'Số trang (bắt đầu từ 1)',
-    example: 1,
-  })
-  @ApiQuery({
-    name: 'limit',
-    required: false,
-    description: 'Số items per page (tối đa 100)',
-    example: 10,
-  })
-  @ApiQuery({
-    name: 'sortBy',
-    required: false,
-    description: 'Sắp xếp theo field',
-    example: 'id',
-  })
-  @ApiQuery({
-    name: 'sortOrder',
-    required: false,
-    description: 'Thứ tự sắp xếp',
-    enum: ['ASC', 'DESC'],
-    example: 'ASC',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Lấy danh sách thành công',
-    type: ListResponseExampleDto,
-  })
-  @Get()
-  async findAll(
-    @Query() paginationQuery: PaginationQueryDto,
-  ): Promise<PaginatedResponseDto<UserResponseDto>> {
-    return this.userService.findAll(paginationQuery);
-  }
-
-  /**
-   * API lấy thông tin chi tiết của một người dùng
-   *
-   * @param id - ID của người dùng cần lấy thông tin
-   * @returns BaseResponseDto<UserResponseDto> - Thông tin chi tiết của người dùng có metadata
-   *
-   * HTTP Method: GET /users/:id
-   * Params: id (number) - được validate bằng ParseIntPipe
-   * Response: 200 - BaseResponseDto<UserResponseDto> | 404 - Không tìm thấy người dùng
-   */
-  @ApiOperation({
-    summary: 'Lấy thông tin người dùng theo ID',
-    description: 'Lấy thông tin chi tiết của một người dùng',
-  })
-  @ApiParam({
-    name: 'id',
-    description: 'ID của người dùng',
-    example: 1,
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Lấy thông tin thành công',
-    type: ResponseExampleDto,
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Không tìm thấy người dùng',
-  })
-  @Get(':id')
-  async findOne(
-    @Param('id', ParseIntPipe) id: number, // ParseIntPipe tự động validate format number
-  ): Promise<BaseResponseDto<UserResponseDto>> {
-    return this.userService.findOne(id);
-  }
-
-  /**
-   * API cập nhật thông tin người dùng
-   *
-   * @param id - ID của người dùng cần cập nhật
-   * @param updateUserDto - Dữ liệu cập nhật (có thể là một phần thông tin)
-   * @returns BaseResponseDto<UserResponseDto> - Thông tin người dùng sau khi cập nhật có metadata
-   *
-   * HTTP Method: PUT /users/:id
-   * Params: id (number)
-   * Body: UpdateUserDto (partial update)
-   * Response: 200 - BaseResponseDto<UserResponseDto> | 404 - Không tìm thấy | 409 - Email đã tồn tại
-   */
-  @ApiOperation({
-    summary: 'Cập nhật thông tin người dùng',
-    description: 'Cập nhật thông tin của một người dùng',
-  })
-  @ApiParam({
-    name: 'id',
-    description: 'ID của người dùng',
-    example: 1,
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Cập nhật thành công',
-    type: ResponseExampleDto,
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Không tìm thấy người dùng',
-  })
-  @ApiResponse({
-    status: 409,
-    description: 'Email đã được sử dụng',
-  })
-  @Put(':id') // PUT cho phép cập nhật một phần dữ liệu
+  @Put(':id')
   async update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateUserDto: UpdateUserDto, // UpdateUserDto kế thừa từ CreateUserDto với PartialType
-  ): Promise<BaseResponseDto<UserResponseDto>> {
-    return this.userService.update(id, updateUserDto);
-  }
-
-  /**
-   * API xóa mềm người dùng khỏi hệ thống
-   *
-   * @param id - ID của người dùng cần xóa
-   * @returns BaseResponseDto<null> - Response với metadata xác nhận xóa thành công
-   *
-   * HTTP Method: DELETE /users/:id
-   * Params: id (number)
-   * Response: 204 - BaseResponseDto<null> | 404 - Không tìm thấy người dùng
-   */
-  @ApiOperation({
-    summary: 'Xóa người dùng',
-    description: 'Xóa mềm một người dùng khỏi hệ thống',
-  })
-  @ApiParam({
-    name: 'id',
-    description: 'ID của người dùng',
-    example: 1,
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Xóa thành công',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Không tìm thấy người dùng',
-  })
-  @Delete(':id')
-  async remove(
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<BaseResponseDto<null>> {
-    return this.userService.remove(id);
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<BaseResponseDto<User | null>> {
+    try {
+      const data = await this.userService.updateUser(+id, updateUserDto);
+      return BaseResponseDto.success(data, RESPONSE_MESSAGES.UPDATED_SUCCESS);
+    } catch (error) {
+      throw new HttpException(
+        BaseResponseDto.error(
+          error.message || RESPONSE_MESSAGES.INTERNAL_ERROR,
+          ResponseCode.BAD_REQUEST,
+        ),
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 }

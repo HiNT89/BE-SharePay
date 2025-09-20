@@ -11,10 +11,10 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 // Import global exception filter để xử lý errors
-import { AllExceptionsFilter } from './common/all-exceptions.filter';
+// import { AllExceptionsFilter } from './common/all-exceptions.filter';
 
 // Import response interceptor để thêm metadata
-import { ResponseInterceptor } from './common/interceptors/response.interceptor';
+// import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 
 /**
  * Bootstrap function - Khởi tạo và cấu hình NestJS application
@@ -34,13 +34,13 @@ async function bootstrap() {
    * Áp dụng Global Exception Filter
    * Xử lý tất cả exceptions trong ứng dụng và format response nhất quán
    */
-  app.useGlobalFilters(new AllExceptionsFilter());
+  // app.useGlobalFilters(new AllExceptionsFilter());
 
   /**
    * Áp dụng Global Response Interceptor
    * Tự động thêm metadata vào tất cả response
    */
-  app.useGlobalInterceptors(new ResponseInterceptor());
+  // app.useGlobalInterceptors(new ResponseInterceptor());
 
   /**
    * Áp dụng Global Validation Pipe
@@ -68,7 +68,7 @@ async function bootstrap() {
    * - credentials: Cho phép gửi cookies và authentication headers
    */
   app.enableCors({
-    origin: ['http://localhost:3000', 'http://localhost:3001'], // Frontend URLs
+    origin: ['http://localhost:3000'], // Frontend URLs
     credentials: true,
   });
 
