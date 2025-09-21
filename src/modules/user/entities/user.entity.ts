@@ -1,6 +1,6 @@
 import { BaseEntity } from '@/common/base/base.entity';
-import { Bill } from '@/modules/bill/entities/bill.entity';
-import { Paid } from '@/modules/paid/entities/paid.entity';
+// import { Bill } from '@/modules/bill/entities/bill.entity';
+// import { Paid } from '@/modules/paid/entities/paid.entity';
 import { Entity, Column, OneToMany } from 'typeorm';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -85,19 +85,19 @@ export class User extends BaseEntity {
   @Column({ type: 'text', nullable: true })
   avatarUrl?: string;
 
-  @ApiPropertyOptional({
-    description: 'Danh sách các hóa đơn được tạo bởi người dùng này',
-    type: () => [Bill],
-    readOnly: true,
-  })
-  @OneToMany(() => Bill, (bill) => bill.userCreateId)
-  bills: Bill[];
+  // @ApiPropertyOptional({
+  //   description: 'Danh sách các hóa đơn được tạo bởi người dùng này',
+  //   type: () => [Bill],
+  //   readOnly: true,
+  // })
+  // @OneToMany(() => Bill, (bill) => bill.userCreateId)
+  // bills: Bill[];
 
-  @ApiPropertyOptional({
-    description: 'Danh sách các bản ghi thanh toán của người dùng này',
-    type: () => [Paid],
-    readOnly: true,
-  })
-  @OneToMany(() => Paid, (paid) => paid.user_id)
-  paids: Paid[];
+  // @ApiPropertyOptional({
+  //   description: 'Danh sách các bản ghi thanh toán của người dùng này',
+  //   type: () => [Paid],
+  //   readOnly: true,
+  // })
+  // @OneToMany(() => Paid, (paid) => paid.user_id)
+  // paids: Paid[];
 }

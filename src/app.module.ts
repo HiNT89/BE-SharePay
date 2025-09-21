@@ -7,9 +7,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 // Import TypeORM module để kết nối database
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './modules/user/user.module';
-import { PaidModule } from './modules/paid/paid.module';
-import { BillItemModule } from './modules/bill-item/bill-item.module';
-import { BillModule } from './modules/bill/bill.module';
+// import { PaidModule } from './modules/paid/paid.module';
+// import { BillItemModule } from './modules/bill-item/bill-item.module';
+// import { BillModule } from './modules/bill/bill.module';
 
 // Import các feature modules
 
@@ -60,9 +60,9 @@ import { BillModule } from './modules/bill/bill.module';
 
     // Import các feature modules
     UserModule,
-    PaidModule,
-    BillItemModule,
-    BillModule,
+    // PaidModule,
+    // BillItemModule,
+    // BillModule,
   ],
 })
 export class AppModule {}
