@@ -52,7 +52,12 @@ export class BillService extends BaseService<Bill> {
       take: limit,
       order: { [sortBy]: sortOrder },
       where: { isActive: true },
-      relations: ['user'], // Include user relation
+      relations: [
+        'user',
+        'billItems',
+        'billItems.paidList',
+        'billItems.paidList.user',
+      ], // Include nested relations
     };
 
     if (search) {
@@ -78,7 +83,12 @@ export class BillService extends BaseService<Bill> {
   async findOneBill(id: number): Promise<BillResponseDto | null> {
     const bill = await this.userRepository.findOne({
       where: { id, isActive: true },
-      relations: ['user'], // Include user relation
+      relations: [
+        'user',
+        'billItems',
+        'billItems.paidList',
+        'billItems.paidList.user',
+      ], // Include nested relations
     });
 
     if (!bill) return null;
@@ -107,7 +117,12 @@ export class BillService extends BaseService<Bill> {
       take: limit,
       order: { [sortBy]: sortOrder },
       where: { isActive: true },
-      relations: ['user'], // Include user relation
+      relations: [
+        'user',
+        'billItems',
+        'billItems.paidList',
+        'billItems.paidList.user',
+      ], // Include nested relations
     };
 
     if (search) {
@@ -128,7 +143,12 @@ export class BillService extends BaseService<Bill> {
   async findOne(id: number): Promise<Bill | null> {
     return await this.userRepository.findOne({
       where: { id, isActive: true },
-      relations: ['user'], // Include user relation
+      relations: [
+        'user',
+        'billItems',
+        'billItems.paidList',
+        'billItems.paidList.user',
+      ], // Include nested relations
     });
   }
 
@@ -139,7 +159,12 @@ export class BillService extends BaseService<Bill> {
       return await this.findByWithPagination(
         {
           where: { isActive: true },
-          relations: ['user'], // Include user relation
+          relations: [
+            'user',
+            'billItems',
+            'billItems.paidList',
+            'billItems.paidList.user',
+          ], // Include nested relations
         },
         paginationDto,
       );
@@ -148,7 +173,12 @@ export class BillService extends BaseService<Bill> {
     return await this.userRepository.find({
       where: { isActive: true },
       order: { createdAt: 'ASC' },
-      relations: ['user'], // Include user relation
+      relations: [
+        'user',
+        'billItems',
+        'billItems.paidList',
+        'billItems.paidList.user',
+      ], // Include nested relations
     });
   }
 }

@@ -97,6 +97,9 @@ async function bootstrap() {
     // Thêm các tags để nhóm endpoints trong Swagger UI
     .addTag('Authentication', 'Các API liên quan đến xác thực')
     .addTag('Users', 'Các API quản lý người dùng')
+    .addTag('Bills', 'Các API quản lý hóa đơn chia sẻ chi phí')
+    .addTag('Bill Items', 'Các API quản lý items trong hóa đơn')
+    .addTag('Payments', 'Các API quản lý thanh toán')
     .build();
 
   // Tạo Swagger document từ cấu hình và metadata của ứng dụng
