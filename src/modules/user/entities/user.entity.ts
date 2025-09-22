@@ -81,6 +81,10 @@ export class UserEntity extends BaseAbstractEntity {
   @Column({ type: 'text', nullable: true })
   avatarUrl?: string;
 
+  // Quan hệ với BillUser (bảng trung gian)
+  @OneToMany('BillUserEntity', 'user')
+  billUsers: any[];
+
   // @ApiPropertyOptional({
   //   description: 'Danh sách các hóa đơn được tạo bởi người dùng này',
   //   type: () => [Bill],

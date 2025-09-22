@@ -9,7 +9,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './modules/user/user.module';
 // import { PaidModule } from './modules/paid/paid.module';
 // import { BillItemModule } from './modules/bill-item/bill-item.module';
-// import { BillModule } from './modules/bill/bill.module';
+import { BillModule } from './modules/bill/bill.module';
+import { BillUserModule } from './modules/bill-user/bill-user.module';
 
 // Import các feature modules
 
@@ -62,7 +63,8 @@ import { UserModule } from './modules/user/user.module';
     UserModule,
     // PaidModule,
     // BillItemModule,
-    // BillModule,
+    BillModule,
+    BillUserModule,
   ],
 })
 export class AppModule {}
