@@ -10,10 +10,10 @@ export class BaseDto {
   isActive!: boolean;
 
   constructor(
-    entity: BaseAbstractEntity,
+    entity?: BaseAbstractEntity,
     options?: { excludeFields?: boolean },
   ) {
-    if (!options?.excludeFields) {
+    if (entity && !options?.excludeFields) {
       this.id = entity.id;
       this.createdAt = entity.createdAt;
       this.updatedAt = entity.updatedAt;

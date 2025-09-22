@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { BaseResponseDto } from '../base/base.common.dto';
+import { BaseResponseDto } from '@/common/base/base.response.dto';
 
 /**
  * Interceptor phản hồi chuẩn hóa tất cả HTTP responses bằng cách bọc chúng trong BaseResponseDto.

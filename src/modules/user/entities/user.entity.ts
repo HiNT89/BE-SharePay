@@ -1,8 +1,9 @@
-import { BaseEntity } from '@/common/base/base.entity';
+import { BaseAbstractEntity } from '@/common/base/base.entity';
 // import { Bill } from '@/modules/bill/entities/bill.entity';
 // import { Paid } from '@/modules/paid/entities/paid.entity';
 import { Entity, Column, OneToMany } from 'typeorm';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { UserRole } from '@/common';
 
 /**
  * Enum định nghĩa các vai trò người dùng trong hệ thống
@@ -10,11 +11,6 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
  * - ADMIN: Quản trị viên có toàn quyền
  * - MODERATOR: Người kiểm duyệt với quyền hạn trung gian
  */
-export enum UserRole {
-  USER = 'user',
-  ADMIN = 'admin',
-  MODERATOR = 'moderator',
-}
 
 /**
  * Entity User - Đại diện cho bảng users trong database
@@ -25,7 +21,7 @@ export enum UserRole {
  * - OneToMany với Paid: Một user có thể có nhiều bản ghi thanh toán
  */
 @Entity('users')
-export class User extends BaseEntity {
+export class UserEntity extends BaseAbstractEntity {
   @ApiProperty({
     description: 'Địa chỉ email duy nhất của người dùng',
     example: 'user@example.com',

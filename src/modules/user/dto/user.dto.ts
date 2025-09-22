@@ -11,8 +11,9 @@ import {
 } from 'class-validator';
 import { Type, Exclude, Expose } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { UserRole } from '../entities/user.entity';
-import { BaseResponseDto } from '@/common/base/base.response.dto';
+
+import { BaseDto } from '@/common';
+import { UserRole } from '@/common';
 
 /**
  * DTO chứa thông tin ngân hàng của người dùng
@@ -164,7 +165,7 @@ export class UpdateUserDto {
   @ApiPropertyOptional({
     description: 'Cập nhật vai trò người dùng',
     enum: UserRole,
-    example: UserRole.MODERATOR,
+    example: UserRole.USER,
   })
   @IsOptional()
   @IsEnum(UserRole)
@@ -193,7 +194,14 @@ export class UpdateUserDto {
  * DTO response cho thông tin người dùng
  * Sử dụng để serialize dữ liệu trả về client, ẩn thông tin nhạy cảm
  */
-export class UserResponseDto extends BaseResponseDto {
+export class UserResponseDto extends BaseDto {
+  @ApiProperty({
+    description: 'ID duy nhất của người dùng',
+    example: 1,
+  })
+  @Expose()
+  declare id: number;
+
   @ApiProperty({
     description: 'Địa chỉ email của người dùng',
     example: 'user@example.com',
@@ -205,7 +213,7 @@ export class UserResponseDto extends BaseResponseDto {
     description: 'Tên hiển thị của người dùng',
     example: 'Nguyễn Văn A',
   })
-  @Expose({ groups: ['bill'] })
+  @Expose()
   name?: string;
 
   @ApiProperty({
@@ -236,4 +244,25 @@ export class UserResponseDto extends BaseResponseDto {
   })
   @Expose()
   avatarUrl?: string;
+
+  @ApiProperty({
+    description: 'Thời gian tạo',
+    example: '2024-01-01T00:00:00Z',
+  })
+  @Expose()
+  declare createdAt: Date;
+
+  @ApiProperty({
+    description: 'Thời gian cập nhật',
+    example: '2024-01-01T12:00:00Z',
+  })
+  @Expose()
+  declare updatedAt: Date;
+
+  @ApiProperty({
+    description: 'Trạng thái hoạt động',
+    example: true,
+  })
+  @Expose()
+  declare isActive: boolean;
 }

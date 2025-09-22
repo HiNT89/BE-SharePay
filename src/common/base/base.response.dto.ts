@@ -56,7 +56,7 @@ export class PaginationDto {
   })
   @IsOptional()
   @IsEnum(['ASC', 'DESC'])
-  sortOrder?: 'ASC' | 'DESC' = 'DESC';
+  sortOrder?: 'ASC' | 'DESC' = 'ASC';
 
   @ApiPropertyOptional({
     description: 'Từ khóa tìm kiếm',

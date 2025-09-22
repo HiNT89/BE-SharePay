@@ -6,9 +6,27 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { BaseResponseDto } from '../base/base.common.dto';
+import { BaseResponseDto } from '@/common/base/base.response.dto';
 import { ResponseCode, RESPONSE_MESSAGES } from '../config/response.config';
 
+/**
+ * Bộ lọc ngoại lệ toàn cục để bắt tất cả các ngoại lệ chưa được xử lý trong ứng dụng
+ * và chuyển đổi chúng thành định dạng phản hồi chuẩn hóa.
+ *
+ * Bộ lọc này chặn các ngoại lệ được ném ra trong toàn bộ ứng dụng và:
+ * - Ánh xạ các ngoại lệ HTTP thành các mã phản hồi phù hợp
+ * - Xử lý lỗi xác thực và các loại ngoại lệ cụ thể khác
+ * - Trả về định dạng lỗi BaseResponseDto nhất quán
+ * - Cung cấp phương án dự phòng cho các lỗi không mong muốn
+ *
+ * @implements {ExceptionFilter}
+ *
+ * @example
+ * ```typescript
+ * // Sử dụng trong main.ts hoặc module
+ * app.useGlobalFilters(new GlobalExceptionFilter());
+ * ```
+ */
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
   catch(exception: any, host: ArgumentsHost) {

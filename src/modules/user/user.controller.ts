@@ -10,6 +10,7 @@ import {
   HttpException,
   HttpStatus,
   Put,
+  Delete,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -19,15 +20,17 @@ import {
   ApiQuery,
   ApiBody,
 } from '@nestjs/swagger';
-import { BaseController } from '@/common/base/base.controller';
 import { UserService } from './user.service';
-import { User } from './entities/user.entity';
+import { UserEntity } from './entities/user.entity';
 import { CreateUserDto, UpdateUserDto, UserResponseDto } from './dto/user.dto';
-import { BaseResponseDto, PaginationDto } from '@/common/base/base.common.dto';
 import {
   ResponseCode,
   RESPONSE_MESSAGES,
 } from '@/common/config/response.config';
+import {
+  BaseResponseDto,
+  PaginationDto,
+} from '@/common/base/base.response.dto';
 
 /**
  * User Controller
@@ -42,14 +45,8 @@ import {
 @ApiTags('Users')
 @Controller('user')
 @UseInterceptors(ClassSerializerInterceptor)
-export class UserController extends BaseController<
-  User,
-  CreateUserDto,
-  UpdateUserDto
-> {
-  constructor(private readonly userService: UserService) {
-    super(userService);
-  }
+export class UserController {
+  constructor(private readonly service: UserService) {}
 
   /**
    * Lấy danh sách tất cả người dùng với phân trang
@@ -78,7 +75,7 @@ export class UserController extends BaseController<
     name: 'search',
     required: false,
     description: 'Từ khóa tìm kiếm (tìm trong tên và email)',
-    example: 'nguyen',
+    example: '',
     type: String,
   })
   @ApiResponse({
@@ -127,9 +124,9 @@ export class UserController extends BaseController<
   @Get()
   async findAll(
     @Query() paginationDto: PaginationDto,
-  ): Promise<BaseResponseDto<User[]>> {
+  ): Promise<BaseResponseDto<UserResponseDto[]>> {
     try {
-      return await this.userService.findAll(paginationDto);
+      return await this.service.getAllWithPagination(paginationDto);
     } catch (error) {
       throw new HttpException(
         BaseResponseDto.error(
@@ -220,14 +217,9 @@ export class UserController extends BaseController<
   @Post()
   async create(
     @Body() createUserDto: CreateUserDto,
-  ): Promise<BaseResponseDto<User | null>> {
+  ): Promise<BaseResponseDto<UserResponseDto | null>> {
     try {
-      const data = await this.userService.createUser(createUserDto);
-      return BaseResponseDto.success(
-        data,
-        RESPONSE_MESSAGES.CREATED_SUCCESS,
-        ResponseCode.CREATED,
-      );
+      return await this.service.createUser(createUserDto);
     } catch (error) {
       throw new HttpException(
         BaseResponseDto.error(
@@ -334,10 +326,31 @@ export class UserController extends BaseController<
   async update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
-  ): Promise<BaseResponseDto<User | null>> {
+  ): Promise<BaseResponseDto<UserResponseDto | null>> {
     try {
-      const data = await this.userService.updateUser(+id, updateUserDto);
-      return BaseResponseDto.success(data, RESPONSE_MESSAGES.UPDATED_SUCCESS);
+      return await this.service.updateUser(+id, updateUserDto);
+    } catch (error) {
+      throw new HttpException(
+        BaseResponseDto.error(
+          error.message || RESPONSE_MESSAGES.INTERNAL_ERROR,
+          ResponseCode.BAD_REQUEST,
+        ),
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  /**
+   * Xoa người dùng theo ID
+   */
+  @ApiOperation({
+    summary: 'Xóa người dùng theo ID',
+    description: 'Xóa người dùng khỏi hệ thống theo ID.',
+  })
+  @Delete(':id')
+  async delete(@Param('id') id: string): Promise<BaseResponseDto<boolean>> {
+    try {
+      return await this.service.delete(+id);
     } catch (error) {
       throw new HttpException(
         BaseResponseDto.error(
